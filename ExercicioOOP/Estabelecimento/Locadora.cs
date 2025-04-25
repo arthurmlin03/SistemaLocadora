@@ -17,6 +17,10 @@ namespace ExercicioOOP.Estabelecimento
 		public void CadastrarVeiculo(Veiculo veiculo)
 		{
 			ListaDeVeiculosCadastrados.Add(veiculo);
+
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine("Veiculo cadastrado!");
+			Console.ResetColor();
 		}
 
 		public void CadastrarCliente(Cliente cliente)
@@ -50,6 +54,8 @@ namespace ExercicioOOP.Estabelecimento
 			}
 
 			cliente.ListaDeVeiculosAlugados.Remove(veiculo);
+
+			Console.WriteLine("Veículo devolvido!");
 			veiculo.Locatario = null;
 		}
 		public void ListarVeiculosDisponiveis()
@@ -66,6 +72,8 @@ namespace ExercicioOOP.Estabelecimento
 		public void ListarVeiculosAlugadosPorCliente(string cpf)
 		{
 			var cliente = ListaDeClientesCadastrados.FirstOrDefault(c => c.CPF == cpf);
+
+
 			if (cliente == null || cliente.ListaDeVeiculosAlugados.Count == 0)
 			{
 				Console.WriteLine("Nenhum veículo alugado.");
@@ -92,5 +100,7 @@ namespace ExercicioOOP.Estabelecimento
 				Console.WriteLine($"Nome: {cliente.Nome} | CPF: {cliente.CPF}");
 			}
 		}
+
+
 	}
 }

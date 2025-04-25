@@ -29,7 +29,7 @@ namespace ExercicioOOP.Automoveis
 
 		public virtual void ExibirInformacoes()
 		{
-			Console.WriteLine("Informações do Veículo Alugado:");
+			Console.WriteLine("Informações do Veículo");
 			Console.WriteLine($"Placa: {Placa}");
 			Console.WriteLine($"Marca: {Marca}");
 			Console.WriteLine($"Modelo: {Modelo}");

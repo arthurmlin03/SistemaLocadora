@@ -11,11 +11,10 @@ namespace ExercicioOOP
 		static void Main(string[] args)
 		{
 			var locadora = new Locadora();
-			var sistema = new Program();
 			var numOp = 0;
 			do
 			{
-				Console.WriteLine("=== SISTEMA DE LOCAÇÃO DE VEÍCULOS === ");
+				EscreverTitulo("=== SISTEMA DE LOCAÇÃO DE VEÍCULOS === ");
 
 				Console.WriteLine("1. Cadastrar novo cliente. ");
 				Console.WriteLine("2. Cadastrar novo veículo.");
@@ -26,6 +25,7 @@ namespace ExercicioOOP
 				Console.WriteLine("7. Sair.");
 
 				Console.WriteLine("Escolha uma operação: ");
+
 
 				if (int.TryParse(Console.ReadLine(), out numOp))
 				{
@@ -48,26 +48,31 @@ namespace ExercicioOOP
 		{
 
 
-			Console.WriteLine("--- CADASTRE UM CLIENTE -----");
+			EscreverTitulo("--- CADASTRE UM CLIENTE -----");
 
 			Console.Write("Nome: ");
 			var nomeCliente = Console.ReadLine();
 
 			Console.Write("CPF: ");
 			var cpfCliente = Console.ReadLine();
+			var cpfFormatado = FormatarCpf(cpfCliente);
 
-			locadora.CadastrarCliente(new Cliente(nomeCliente, cpfCliente));
+
+			locadora.CadastrarCliente(new Cliente(nomeCliente, cpfFormatado));
 
 			Console.WriteLine("Cliente cadastrado! ");
+
+			EscreverTitulo("------------------------------------------");
+			Console.WriteLine();
 		}
 
 		private static void CadastroDeVeiculo(Locadora locadora)
 		{
 
-			Console.WriteLine("--- CADASTRE UM VEÍCULO ---");
+			EscreverTitulo("--- CADASTRE UM VEÍCULO ---");
 
 			Console.WriteLine("É um carro, moto ou caminhão (c/m/t)");
-			var type = char.Parse(Console.ReadLine());
+			var type = char.Parse(Console.ReadLine().ToUpper());
 
 			Console.Write("Marca: ");
 			var marcaVeiculo = Console.ReadLine();
@@ -76,34 +81,45 @@ namespace ExercicioOOP
 			var modeloVeiculo = Console.ReadLine();
 
 			Console.Write("Ano: ");
-			var anoVeiculo = int.Parse(Console.ReadLine());
+			if (!int.TryParse(Console.ReadLine(), out int anoVeiculo))
+			{
+				Console.WriteLine("Ano inválido");
+				return;
+			}
 
 			Console.Write("Placa do veículo: ");
 			var placaVeiculo = Console.ReadLine();
+			var placaFormatada = FormatarPlaca(placaVeiculo);
 
 
-			if (type == 'c')
+			if (type == 'C')
 			{
 				Console.WriteLine("Quantas portas o carro possui?");
 				var numeroDePortas = int.Parse(Console.ReadLine());
 
-				locadora.CadastrarVeiculo(new Carro(marcaVeiculo, modeloVeiculo, anoVeiculo, placaVeiculo, numeroDePortas));
+				locadora.CadastrarVeiculo(new Carro(marcaVeiculo, modeloVeiculo, anoVeiculo, placaFormatada, numeroDePortas));
 			}
-			else if (type == 'm')
+			else if (type == 'M')
 			{
 				Console.WriteLine("Quantas cilidradas a moto possui? ");
 				var cilindradas = int.Parse(Console.ReadLine());
 
-				locadora.CadastrarVeiculo(new Moto(marcaVeiculo, modeloVeiculo, anoVeiculo, placaVeiculo, cilindradas));
+				locadora.CadastrarVeiculo(new Moto(marcaVeiculo, modeloVeiculo, anoVeiculo, placaFormatada, cilindradas));
 			}
-			else
+			else if (type == 'T')
 			{
 				Console.WriteLine("Qual a capacidade em toneladas do caminhão? ");
 				var capacidadeEmToneladas = double.Parse(Console.ReadLine());
 
-				locadora.CadastrarVeiculo(new Caminhao(marcaVeiculo, modeloVeiculo, anoVeiculo, placaVeiculo, capacidadeEmToneladas));
-
+				locadora.CadastrarVeiculo(new Caminhao(marcaVeiculo, modeloVeiculo, anoVeiculo, placaFormatada, capacidadeEmToneladas));
 			}
+			else
+			{
+				Console.WriteLine("Desculpe, não possuímos esse tipo de veículo.");
+			}
+
+			EscreverTitulo("------------------------------------------");
+			Console.WriteLine();
 
 		}
 
@@ -124,7 +140,7 @@ namespace ExercicioOOP
 					DevolverVeiculoAlugado(locadora);
 					break;
 				case 5:
-					locadora.ListarVeiculosDisponiveis();
+					ListarVeiculosCadastrados(locadora);
 					break;
 				case 6:
 					ListarVeiculosAlugadosPorClientes(locadora);
@@ -137,41 +153,107 @@ namespace ExercicioOOP
 
 		private static void FazerAluguelDeVeiculo(Locadora locadora)
 		{
-			Console.WriteLine("--- ALUGAR VEÍCULO ---- ");
-			
+			EscreverTitulo("--- ALUGAR VEÍCULO ---- ");
+
+			Console.WriteLine();
+
 			locadora.ListarClientesCadastrados();
 
 			Console.WriteLine("Digite o cpf do cliente:  ");
 			var cpfCliente = Console.ReadLine();
+			var cpfFormatado = FormatarCpf(cpfCliente);
+
+
+			locadora.ListarVeiculosDisponiveis();
 
 			Console.WriteLine("Digite a placa do veículo:  ");
 			var placaVeiculo = Console.ReadLine();
+			var placaFormatada = FormatarPlaca(placaVeiculo);
 
-			locadora.AlugarVeiculo(cpfCliente, placaVeiculo);
-			Console.WriteLine("------------------------------------------");
+			locadora.AlugarVeiculo(cpfFormatado, placaFormatada);
+			EscreverTitulo("------------------------------------------");
+			Console.WriteLine();
 		}
 
 		private static void DevolverVeiculoAlugado(Locadora locadora)
 		{
-			Console.WriteLine("--- DEVOLUÇÃO VÉICULO ALUGADO ---");
+			EscreverTitulo("--- DEVOLUÇÃO VÉICULO ALUGADO ---");
+			locadora.ListarClientesCadastrados();
+
 			Console.WriteLine("Digite o cpf do cliente:  ");
 			var cpfCliente = Console.ReadLine();
+			var cpfFormatado = FormatarCpf(cpfCliente);
+
+			locadora.ListarVeiculosAlugadosPorCliente(cpfFormatado);
 
 			Console.WriteLine("Digite a placa do veículo:  ");
 			var placaVeiculo = Console.ReadLine();
+			var placaFormatada = FormatarPlaca(placaVeiculo);
 
-			locadora.DevolverVeiculo(cpfCliente, placaVeiculo);
-			Console.WriteLine("------------------------------------------");
+			locadora.DevolverVeiculo(cpfFormatado, placaFormatada);
+
+			EscreverTitulo("------------------------------------------");
+			Console.WriteLine();
 		}
 
 		private static void ListarVeiculosAlugadosPorClientes(Locadora locadora)
 		{
+			EscreverTitulo("--- VEICULOS ALUGADOS ----");
+			Console.WriteLine();
+			locadora.ListarClientesCadastrados();
 			Console.WriteLine("Digite o CPF do cliente: ");
 			var cpf = Console.ReadLine();
+			var cpfFormatado = FormatarCpf(cpf);
 
-			locadora.ListarVeiculosAlugadosPorCliente(cpf);
-			Console.WriteLine("------------------------------------------");
+			locadora.ListarVeiculosAlugadosPorCliente(cpfFormatado);
+
+			EscreverTitulo("------------------------------------------");
+			Console.WriteLine();
 
 		}
+
+		private static void EscreverTitulo(string mensagem)
+		{
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine(mensagem);
+			Console.ResetColor();
+		}
+
+		private static void ListarVeiculosCadastrados(Locadora locadora)
+		{
+			EscreverTitulo("--- VEICULOS DISPONÍVEIS PARA ALUGAR ----");
+			Console.WriteLine();
+			locadora.ListarVeiculosDisponiveis();
+
+			EscreverTitulo("------------------------------------------");
+			Console.WriteLine();
+
+		}
+
+		public static string FormatarCpf(string cpf)
+		{
+			var numeros = new string(cpf.Where(char.IsDigit).ToArray());
+
+			if (numeros.Length != 11)
+				return "CPF inválido";
+
+			return Convert.ToUInt64(numeros).ToString(@"000\.000\.000\-00");
+		}
+
+		public static string FormatarPlaca(string placa)
+		{
+			if (string.IsNullOrWhiteSpace(placa))
+				return "Placa inválida";
+
+			var limpa = new string(placa.ToUpper().Where(char.IsLetterOrDigit).ToArray());
+
+			if (limpa.Length != 7)
+				return "Placa inválida";
+
+			
+			return limpa.Substring(0, 3) + "-" + limpa.Substring(3, 4);
+		}
+
+
 	}
 }
