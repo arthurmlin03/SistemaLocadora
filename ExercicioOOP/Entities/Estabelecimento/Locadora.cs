@@ -1,5 +1,6 @@
 ﻿using ExercicioOOP.Automoveis;
 using ExercicioOOP.Customers;
+using ExercicioOOP.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ExercicioOOP.Estabelecimento
 {
-	public class Locadora
+	public class Locadora : ILocadora
 	{
 		public List<Veiculo> ListaDeVeiculosCadastrados { get; set; } = new List<Veiculo>();
 
@@ -17,10 +18,6 @@ namespace ExercicioOOP.Estabelecimento
 		public void CadastrarVeiculo(Veiculo veiculo)
 		{
 			ListaDeVeiculosCadastrados.Add(veiculo);
-
-			Console.ForegroundColor = ConsoleColor.Green;
-			Console.WriteLine("Veiculo cadastrado!");
-			Console.ResetColor();
 		}
 
 		public void CadastrarCliente(Cliente cliente)
@@ -62,16 +59,22 @@ namespace ExercicioOOP.Estabelecimento
 		{
 			var veiculos = ListaDeVeiculosCadastrados.Where(v => v.Locatario == null);
 
-			Console.WriteLine("Veiculos disponíveis: ");
+			if (!veiculos.Any())
+			{
+				Console.WriteLine("Não há veículos disponíveis.");
+				return;
+			}
+
+			Console.WriteLine("Veículos disponíveis: ");
 			foreach (var veiculo in veiculos)
 			{
 				veiculo.ExibirInformacoes();
 			}
 		}
 
-		public void ListarVeiculosAlugadosPorCliente(string cpf)
+		public void ListarVeiculosAlugadosPorCliente(string cpfCliente)
 		{
-			var cliente = ListaDeClientesCadastrados.FirstOrDefault(c => c.CPF == cpf);
+			var cliente = ListaDeClientesCadastrados.FirstOrDefault(c => c.CPF == cpfCliente);
 
 
 			if (cliente == null || cliente.ListaDeVeiculosAlugados.Count == 0)
@@ -85,7 +88,6 @@ namespace ExercicioOOP.Estabelecimento
 				veiculo.ExibirInformacoes();
 			}
 		}
-
 		public void ListarClientesCadastrados()
 		{
 			if (ListaDeClientesCadastrados.Count == 0)
@@ -100,7 +102,6 @@ namespace ExercicioOOP.Estabelecimento
 				Console.WriteLine($"Nome: {cliente.Nome} | CPF: {cliente.CPF}");
 			}
 		}
-
 
 	}
 }
